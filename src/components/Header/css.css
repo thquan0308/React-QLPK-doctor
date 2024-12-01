@@ -1,0 +1,19 @@
+.marquee {
+    width: 100%; 
+    overflow: hidden;  /* Ẩn chữ ngoài vùng chứa */
+    white-space: nowrap; /* Đảm bảo chữ không xuống dòng */
+  }
+
+  .marquee-text {
+    display: inline-block; /* Chữ chạy theo chiều ngang */
+    animation: marquee 10s linear infinite; /* Sử dụng animation */
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%); /* Bắt đầu từ bên phải */
+    }
+    100% {
+      transform: translateX(-100%); /* Chạy ra ngoài bên trái */
+    }
+  }
