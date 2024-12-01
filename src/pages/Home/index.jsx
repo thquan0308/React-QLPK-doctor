@@ -44,7 +44,7 @@ const Home = () => {
         if(res) {
           dispatch(doLogoutAction())          
           message.success(res.message)
-          navigate('/doctor')
+          navigate('/login-doctor')
         }
     }
 
