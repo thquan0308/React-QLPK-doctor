@@ -19,3 +19,9 @@ export const doiThongTinDoctor = (_idAcc, lastName, firstName, email, passwordMo
     })
 }
 
+export const handleQuenPassword = (email_doimk) => {
+    const URL_BACKEND = '/api/users/quen-mat-khau-doctor'   
+    return axios.post(URL_BACKEND, {email_doimk})
+}
+
+
