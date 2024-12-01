@@ -13,3 +13,9 @@ export const handleLogouDoctort = () => {
     return axios.post(URL_BACKEND)
 }
 
+export const doiThongTinDoctor = (_idAcc, lastName, firstName, email, passwordMoi) => {
+    return axios.put('/api/users/doi-mat-khau-doctor', {
+        _idAcc, lastName, firstName, email, passwordMoi
+    })
+}
+

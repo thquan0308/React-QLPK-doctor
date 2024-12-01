@@ -10,6 +10,7 @@ import UpdateDoctor from "../../components/ThongTin/UpdateDoctor"
 import { useEffect, useState } from "react"
 import { fetchAllDoctorByID } from "../../services/apiDoctor"
 import KeHoachKhamBenh from "../../components/KeHoachKhamBenh/KeHoachKhamBenh"
+import ModalDoiMK from "../../components/ModalDoiMK/ModalDoiMK"
 
 const Home = () => {
 
@@ -73,8 +74,8 @@ const Home = () => {
                     <button className="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i className="fa-regular fa-bag-shopping" />Lịch hẹn của tôi</button>
                     <button className="nav-link" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true"><i className="fa-regular fa-chart-line" />Thông tin của tôi</button>
                     <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i className="fa-sharp fa-regular fa-tractor" /> Cài đặt lịch trình</button>
-                    <button className="nav-link" id="v-pills-settingsa-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settingsa" type="button" role="tab" aria-controls="v-pills-settingsa" aria-selected="false"><i className="fa-light fa-user" />Account Details</button>
-                    <button className="nav-link" id="v-pills-settingsb-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settingsb" type="button" role="tab" aria-controls="v-pills-settingsb" aria-selected="false"><a onClick={() => logoutClick()}><i className="fa-light fa-right-from-bracket" />log Out</a></button>
+                    <button className="nav-link" id="v-pills-settingsa-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settingsa" type="button" role="tab" aria-controls="v-pills-settingsa" aria-selected="false"><i className="fa-light fa-user" />Đổi mật khẩu</button>
+                    <button className="nav-link" id="v-pills-settingsb-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settingsb" type="button" role="tab" aria-controls="v-pills-settingsb" aria-selected="false"><a onClick={() => logoutClick()}><i className="fa-light fa-right-from-bracket" />Đăng xuất</a></button>
                     </div>
                 </div>
                 <div className="col-lg-9 pl--50 pl_md--10 pl_sm--10 pt_md--30 pt_sm--30">
@@ -108,25 +109,9 @@ const Home = () => {
                             </div>
                         </div>                       
 
+                        {/* đổi mật khẩu */}
                         <div className="tab-pane fade" id="v-pills-settingsa" role="tabpanel" aria-labelledby="v-pills-settingsa-tab" tabIndex={0}>
-                            <form action="#" className="account-details-area">
-                            <h2 className="title">Account Details</h2>
-                            <div className="input-half-area">
-                                <div className="single-input">
-                                <input type="text" placeholder="First Name" />
-                                </div>
-                                <div className="single-input">
-                                <input type="text" placeholder="Last Name" />
-                                </div>
-                            </div>
-                            <input type="text" placeholder="Display Name" required />
-                            <input type="email" placeholder="Email Address *" required />
-                            <input type="email" placeholder="Email Address *" />
-                            <input type="password" placeholder="Current Password *" required />
-                            <input type="password" placeholder="New Password *" />
-                            <input type="password" placeholder="Confirm Password *" />
-                            <button className="rts-btn btn-primary">Save Change</button>
-                            </form>
+                            <ModalDoiMK/>
                         </div>
 
                         {/* <div className="tab-pane fade" id="v-pills-settingsb" role="tabpanel" aria-labelledby="v-pills-settingsb-tab" tabIndex={0}>...</div> */}
