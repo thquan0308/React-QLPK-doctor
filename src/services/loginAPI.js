@@ -9,7 +9,7 @@ export const handleLoginDoctor = (email, password) => {
 }
 
 export const handleLogouDoctort = () => {
-    const URL_BACKEND = '/api/users/logout-doctor'    
+    const URL_BACKEND = '/api/users/logout-doctor'
     return axios.post(URL_BACKEND)
 }
 
@@ -20,8 +20,9 @@ export const doiThongTinDoctor = (_idAcc, lastName, firstName, email, passwordMo
 }
 
 export const handleQuenPassword = (email_doimk) => {
-    const URL_BACKEND = '/api/users/quen-mat-khau-doctor'   
-    return axios.post(URL_BACKEND, {email_doimk})
+    const URL_BACKEND = '/api/users/quen-mat-khau-doctor'
+    return axios.post(URL_BACKEND, { email_doimk })
 }
+
 
 

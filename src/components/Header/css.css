@@ -1,19 +1,29 @@
 .marquee {
-    width: 100%; 
-    overflow: hidden;  /* Ẩn chữ ngoài vùng chứa */
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+    overflow: hidden; /* Ẩn chữ ngoài vùng chứa */
     white-space: nowrap; /* Đảm bảo chữ không xuống dòng */
-  }
+}
 
-  .marquee-text {
+.marquee-text {
     display: inline-block; /* Chữ chạy theo chiều ngang */
     animation: marquee 10s linear infinite; /* Sử dụng animation */
-  }
+}
 
-  @keyframes marquee {
+@keyframes marquee {
     0% {
-      transform: translateX(100%); /* Bắt đầu từ bên phải */
+        transform: translateX(100%); /* Bắt đầu từ bên phải */
     }
     100% {
-      transform: translateX(-100%); /* Chạy ra ngoài bên trái */
+        transform: translateX(-100%); /* Chạy ra ngoài bên trái */
     }
-  }
+}
+
+.logo {
+    max-width: 60px; /* Điều chỉnh chiều rộng tối đa của logo */
+    height: auto; /* Đảm bảo tỷ lệ của logo không bị méo */
+    margin-left: 170px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
