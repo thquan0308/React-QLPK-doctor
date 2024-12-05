@@ -163,6 +163,20 @@ export const fetchLichKham = (idKhachHang) => {
     return axios.get(URL_BACKEND)
 }
 
+//freestyle
+// export const updateTrangThaiDaKham = (idLichHen) => {
+//     const URL_BACKEND = `/api/doctor/cap-nhat-trang-thai`;
+//     return axios.put(URL_BACKEND, { idLichHen });
+// };
+
+// export const updateGhiChuBenhAn = (idLichHen, ghiChu) => {
+//     const URL_BACKEND = `/api/doctor/update-ghi-chu-benh-an`;
+//     return axios.put(URL_BACKEND, { idLichHen, ghiChu });
+// };
+
+
+
+
 // tim bac si thong qua id chuyen khoa
 export const fetchDoctorByChuyenKhoa = (idChuyenKhoa) => {
     const URL_BACKEND = `/api/doctor/doctor-chuyen-khoa?idChuyenKhoa=${idChuyenKhoa}`

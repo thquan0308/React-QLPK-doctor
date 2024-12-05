@@ -287,6 +287,32 @@ const Login = () => {
                                         setOpenQuenMK(false);
                                         formLayMK.resetFields();
                                     }}
+                                    footer={
+                                        <div
+                                            style={{
+                                                // display: "flex",
+                                                justifyContent: "space-between",
+                                                width: "100%",
+                                            }}
+                                        >
+                                            <Button
+                                                onClick={() => {
+                                                    setOpenQuenMK(false);
+                                                    formLayMK.resetFields();
+                                                }}
+                                            >
+                                                Huỷ
+                                            </Button>
+                                            <Button
+                                                type="primary"
+                                                onClick={() =>
+                                                    formLayMK.submit()
+                                                }
+                                            >
+                                                Lấy mật khẩu
+                                            </Button>
+                                        </div>
+                                    }
                                 >
                                     <Divider />
                                     <Form
