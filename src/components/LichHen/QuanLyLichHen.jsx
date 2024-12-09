@@ -34,7 +34,7 @@ import "./custom.css";
 const QuanLyLichHen = () => {
     const [dataOrder, setDataOrder] = useState([]);
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [total, setTotal] = useState(0);
     const [loadingOrder, setLoadingOrder] = useState(false);
     const [sortQuery, setSortQuery] = useState("sort=createdAt&order=desc");
@@ -249,51 +249,6 @@ const QuanLyLichHen = () => {
             },
         },
 
-        {
-            title: (
-                <span style={{ justifyContent: "center", display: "flex" }}>
-                    Bệnh Án
-                </span>
-            ),
-            key: "status",
-            dataIndex: "status",
-            width: 200,
-            render: (text, record) => {
-                return (
-                    <>
-                        {record?.trangThaiKham === true ? (
-                            <>
-                                <div
-                                    style={{
-                                        textAlign: "center",
-                                        wordWrap: "break-word", // Cho phép chữ xuống dòng khi dài
-                                        wordBreak: "break-all", // Nếu chữ quá dài, nó sẽ bẻ gãy từ để xuống dòng
-                                        whiteSpace: "nowrap", // Giúp cho dòng có thể xuống khi cần
-                                        overflow: "hidden", // Ẩn phần vượt ra ngoài nếu cần
-                                        textOverflow: "ellipsis", // Hiển thị dấu ba chấm nếu nội dung quá dài
-                                        maxWidth: "150px",
-                                        display: "inline-block",
-                                    }}
-                                >
-                                    {record?.benhAn}
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <p
-                                    style={{
-                                        color: "red",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    chưa khám bệnh
-                                </p>
-                            </>
-                        )}
-                    </>
-                );
-            },
-        },
         // {
         //     title: "Thông tin",
         //     dataIndex: "total",
@@ -313,32 +268,17 @@ const QuanLyLichHen = () => {
         //         );
         //     },
         // },
+
+        //Xác nhận lịch khám
         {
-            title: "Chức năng",
+            title: (
+                <span style={{ justifyContent: "center", display: "flex" }}>
+                    Xác nhận lịch khám
+                </span>
+            ),
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <Tooltip
-                        title="Xem chi tiết lịch hẹn này"
-                        color={"green"}
-                        key={"green"}
-                    >
-                        <FaEye
-                            size={23}
-                            style={{
-                                color: "green",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                                fontSize: "18px",
-                            }}
-                            onClick={() => {
-                                console.log("record: ", record);
-                                setOpenViewDH(true);
-                                setDataViewDH(record);
-                            }}
-                        />
-                    </Tooltip>
-
                     {/* <Tooltip
                         title="Cập nhật ghi chú bệnh án"
                         color="green"
@@ -371,12 +311,64 @@ const QuanLyLichHen = () => {
             ),
         },
 
+        //Bệnh án
+        {
+            title: (
+                <span style={{ justifyContent: "center", display: "flex" }}>
+                    Bệnh Án
+                </span>
+            ),
+            key: "status",
+            dataIndex: "status",
+            width: 200,
+            render: (text, record) => {
+                return (
+                    <>
+                        {record?.trangThaiKham === true ? (
+                            <>
+                                <div
+                                    style={{
+                                        display: "-webkit-box",
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden",
+                                        WebkitLineClamp: 2, // Giới hạn số dòng là 2
+                                        whiteSpace: "normal", // Đảm bảo dòng được gói đúng cách
+                                    }}
+                                >
+                                    {record?.benhAn}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <p
+                                    style={{
+                                        color: "red",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    Chưa khám bệnh
+                                </p>
+                            </>
+                        )}
+                    </>
+                );
+            },
+        },
+
+        //Ghi bệnh án
         {
             title: "Ghi bệnh án",
             key: "action",
             render: (_, record) => (
-                <Space size="middle">
-                    {/* <Tooltip
+                <Space
+                    size="middle"
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Tooltip
                         title="Xem chi tiết lịch hẹn này"
                         color={"green"}
                         key={"green"}
@@ -395,8 +387,7 @@ const QuanLyLichHen = () => {
                                 setDataViewDH(record);
                             }}
                         />
-                    </Tooltip> */}
-
+                    </Tooltip>
                     <Tooltip
                         title="Cập nhật ghi chú bệnh án"
                         color="green"
@@ -406,7 +397,6 @@ const QuanLyLichHen = () => {
                             size={23}
                             onClick={() => {
                                 console.log("record", record);
-
                                 setIsModalOpen(true);
                                 setDataBenhNhan(record);
                             }}
@@ -522,7 +512,7 @@ const QuanLyLichHen = () => {
                     setDataViewDH={setDataViewDH}
                 />
 
-                <Modal
+                {/* <Modal
                     title={`Chỉnh sửa lịch khám bệnh cho bệnh nhân ${dataBenhNhan?.patientName}`}
                     open={isModalOpen}
                     onOk={() => form.submit()}
@@ -546,7 +536,7 @@ const QuanLyLichHen = () => {
                                         {
                                             required: true,
                                             message:
-                                                "Vui lòng nhập đầy đủ thông tinị!",
+                                                "Vui lòng nhập đầy đủ thông tin!",
                                         },
                                     ]}
                                 >
@@ -577,9 +567,104 @@ const QuanLyLichHen = () => {
                         </Row>
                     </Form>
                     <br />
+                </Modal> */}
+
+                <Modal
+                    title={`Chỉnh sửa lịch khám bệnh cho bệnh nhân ${dataBenhNhan?.patientName}`}
+                    open={isModalOpen}
+                    style={{ marginTop: "50px" }}
+                    width={700}
+                    maskClosable={false}
+                    footer={null} // Ẩn footer mặc định
+                    onCancel={() => setIsModalOpen(false)} // Đóng modal khi nhấn nút "X"
+                >
+                    <Form form={form} onFinish={handleOk}>
+                        <Divider />
+                        <Row gutter={[20, 85]}>
+                            <Form.Item hidden name="_id">
+                                <Input />
+                            </Form.Item>
+                            <Col span={24} md={24} sm={24} xs={24}>
+                                <Form.Item
+                                    layout="vertical"
+                                    label="Chi tiết bệnh án"
+                                    name="benhAn"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Vui lòng nhập đầy đủ thông tin!",
+                                        },
+                                    ]}
+                                >
+                                    <Input.TextArea
+                                        row={5}
+                                        style={{ height: "100px" }}
+                                    />
+                                </Form.Item>
+                            </Col>
+
+                            <Col span={24} md={24} sm={24} xs={24}>
+                                <Form.Item
+                                    layout="vertical"
+                                    label="Trạng thái khám bệnh"
+                                    name="trangThaiKham"
+                                >
+                                    <Switch
+                                        style={{ width: "150px" }}
+                                        checked={checkKham}
+                                        onChange={(checked) =>
+                                            onChangeCheckKham(checked)
+                                        }
+                                        checkedChildren="Đã khám xong"
+                                        unCheckedChildren="Chưa được khám"
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <br />
+                    </Form>
+                    {/* Footer tuỳ chỉnh */}
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            gap: "10px",
+                        }}
+                    >
+                        <Button onClick={() => setIsModalOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button type="primary" onClick={() => form.submit()}>
+                            OK
+                        </Button>
+                    </div>
                 </Modal>
             </Row>
         </>
     );
 };
 export default QuanLyLichHen;
+
+{
+    /* <Tooltip
+                        title="Xem chi tiết lịch hẹn này"
+                        color={"green"}
+                        key={"green"}
+                    >
+                        <FaEye
+                            size={23}
+                            style={{
+                                color: "green",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                                fontSize: "18px",
+                            }}
+                            onClick={() => {
+                                console.log("record: ", record);
+                                setOpenViewDH(true);
+                                setDataViewDH(record);
+                            }}
+                        />
+                    </Tooltip> */
+}
