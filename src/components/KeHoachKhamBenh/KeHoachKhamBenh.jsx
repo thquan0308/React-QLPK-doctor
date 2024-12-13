@@ -1,54 +1,75 @@
-import { Button, Checkbox, Col, DatePicker, Divider, Form, message, notification, Row, Select, Space } from "antd"
-import { useEffect, useState } from "react"
-import moment from "moment"
-import './css.scss'
-import { addTimeKhamBenh, fetchAllDoctorByID, fetchAllTime, getTimeSlotsByDoctorAndDate } from "../../services/apiDoctor"
-import { useSelector } from "react-redux"
+import {
+    Button,
+    Checkbox,
+    Col,
+    DatePicker,
+    Divider,
+    Form,
+    message,
+    notification,
+    Row,
+    Select,
+    Space,
+} from "antd";
+import { useEffect, useState } from "react";
+import moment from "moment";
+import "./css.scss";
+import {
+    addTimeKhamBenh,
+    fetchAllDoctorByID,
+    fetchAllTime,
+    getTimeSlotsByDoctorAndDate,
+} from "../../services/apiDoctor";
+import { useSelector } from "react-redux";
 
 const KeHoachKhamBenh = () => {
+    const [form] = Form.useForm();
+    const [dataDoctor, setDataDoctor] = useState([]);
+    const [dataTime, setDataTime] = useState("");
+    const [selectedTimes, setSelectedTimes] = useState([]);
 
-    const [form] = Form.useForm()
-    const [dataDoctor, setDataDoctor] = useState([])
-    const [dataTime, setDataTime] = useState('')
-    const [selectedTimes, setSelectedTimes] = useState([]);    
-
-    const [currentDoctorId, setCurrentDoctorId] = useState('');
+    const [currentDoctorId, setCurrentDoctorId] = useState("");
     const [appointmentDate, setAppointmentDate] = useState(null);
 
-    const user = useSelector(state => state.accountDoctor.user)
+    const user = useSelector((state) => state.accountDoctor.user);
 
     useEffect(() => {
-        fetchAllDoctors()
-    }, [])
+        fetchAllDoctors();
+    }, []);
 
     useEffect(() => {
-        fetchAllTimes()
-    }, [])
+        fetchAllTimes();
+    }, []);
 
     useEffect(() => {
         const fetchDoctorTimes = async () => {
-            if (form.getFieldValue('id') && form.getFieldValue('date')) {
-                const doctorId = form.getFieldValue('id');
-                const appointmentDate = form.getFieldValue('date').format('YYYY-MM-DD'); // Đảm bảo định dạng đúng
-    
-                let query = `doctorId=${doctorId}&date=${appointmentDate}`
+            if (form.getFieldValue("id") && form.getFieldValue("date")) {
+                const doctorId = form.getFieldValue("id");
+                const appointmentDate = form
+                    .getFieldValue("date")
+                    .format("YYYY-MM-DD"); // Đảm bảo định dạng đúng
+
+                let query = `doctorId=${doctorId}&date=${appointmentDate}`;
                 const res = await getTimeSlotsByDoctorAndDate(query);
                 console.log("res: ", res);
-                
-                if (res) {                    
+
+                if (res) {
                     if (res.timeSlots) {
                         setSelectedTimes(res.timeSlots); // Cập nhật selectedTimes với thời gian có sẵn
                     }
                 } else {
                     // Xử lý lỗi nếu cần
-                    console.error('Error fetching time slots:', await res.json());
+                    console.error(
+                        "Error fetching time slots:",
+                        await res.json()
+                    );
                 }
             }
         };
-    
+
         fetchDoctorTimes();
-    }, [form.getFieldValue('_id'), form.getFieldValue('date')]);
-    
+    }, [form.getFieldValue("_id"), form.getFieldValue("date")]);
+
     useEffect(() => {
         // Reset selected times khi thay đổi bác sĩ hoặc ngày khám
         form.setFieldsValue({ time: undefined }); // Clear the time field in the form
@@ -56,29 +77,28 @@ const KeHoachKhamBenh = () => {
     }, [form]);
 
     const fetchAllDoctors = async () => {
-        let query = `_id=${user?._id}`
-        const res = await fetchAllDoctorByID(query)
+        let query = `_id=${user?._id}`;
+        const res = await fetchAllDoctorByID(query);
         console.log("res doctor: ", res);
         if (res && res.data) {
-            setDataDoctor(res.data)
+            setDataDoctor(res.data);
         }
-    }
+    };
     const fetchAllTimes = async () => {
-        const res = await fetchAllTime()
+        const res = await fetchAllTime();
         console.log("res doctor: ", res);
         if (res && res.data) {
-            setDataTime(res.data)
+            setDataTime(res.data);
         }
-    }
+    };
     console.log("dataDoctor: ", dataDoctor);
     console.log("dataTime: ", dataTime);
-    
+
     const handleTimeSelect = (timeId) => {
-        
         // Kiểm tra xem thời gian đã được chọn chưa
         const newSelectedTimes = selectedTimes.includes(timeId)
-        ? selectedTimes.filter(id => id !== timeId) // Nếu đã chọn thì bỏ chọn
-        : [...selectedTimes, timeId]; // Nếu chưa chọn thì thêm vào danh sách đã chọn
+            ? selectedTimes.filter((id) => id !== timeId) // Nếu đã chọn thì bỏ chọn
+            : [...selectedTimes, timeId]; // Nếu chưa chọn thì thêm vào danh sách đã chọn
 
         setSelectedTimes(newSelectedTimes); // Cập nhật trạng thái
 
@@ -94,43 +114,50 @@ const KeHoachKhamBenh = () => {
     };
 
     const handleSubmit = async (values) => {
-
-        const {id, date} = values
-        const appointmentDate = date.format('DD-MM-YYYY'); // Giữ định dạng mà không chuyển đổi
+        const { id, date } = values;
+        const appointmentDate = date.format("DD-MM-YYYY"); // Giữ định dạng mà không chuyển đổi
         console.log("Bác sĩ ID: ", id);
         console.log("Ngày khám: ", date);
         console.log("Ngày khám appointmentDate: ", appointmentDate);
-        console.log("Thời gian đã chọn:", selectedTimes); 
-
+        console.log("Thời gian đã chọn:", selectedTimes);
 
         // if (selectedTimes.length === 0) {
         //     message.error('Vui lòng chọn ít nhất một thời gian!');
         //     return;
         // }
 
-        const res = await addTimeKhamBenh(appointmentDate, selectedTimes, id )
+        const res = await addTimeKhamBenh(appointmentDate, selectedTimes, id);
         console.log("res thêm time: ", res);
-        if(res && res.data){
-            message.success(res.message);            
+        if (res && res.data) {
+            message.success(res.message);
         } else {
             notification.error({
-                message: 'Đã có lỗi xảy ra',
-                description: res.message
-            })
+                message: "Đã có lỗi xảy ra",
+                description: res.message,
+            });
         }
-    }
+    };
 
     const onChange = (date, dateString) => {
         console.log(date, dateString);
-    }
+    };
 
     console.log("dataDoctor: ", dataDoctor);
 
     return (
         <>
             <Row>
-                <Col span={24} style={{padding: "0 0 20px", fontSize: "18px", textAlign: "center"}}>
-                    <span style={{fontWeight: "500", color: "navy"}}>KẾ HOẠCH KHÁM BỆNH CỦA TÔI</span>                                                   
+                <Col
+                    span={24}
+                    style={{
+                        padding: "0 0 20px",
+                        fontSize: "18px",
+                        textAlign: "center",
+                    }}
+                >
+                    <span style={{ fontWeight: "500", color: "navy" }}>
+                        KẾ HOẠCH KHÁM BỆNH CỦA TÔI
+                    </span>
                 </Col>
             </Row>
             <Divider />
@@ -138,8 +165,8 @@ const KeHoachKhamBenh = () => {
                 <Col span={24}>
                     <Form
                         form={form}
-                        name="basic"        
-                        layout="vertical"                
+                        name="basic"
+                        layout="vertical"
                         style={{
                             maxWidth: "100%",
                         }}
@@ -149,18 +176,18 @@ const KeHoachKhamBenh = () => {
                         onFinish={handleSubmit}
                         autoComplete="off"
                     >
-                        <Row gutter={[20,5]}>
+                        <Row gutter={[20, 5]}>
                             <Col span={19} md={19} sm={19} xs={24}>
                                 <Form.Item
                                     layout="vertical"
                                     label="Họ và Tên bác sĩ - Phòng khám ( địa chỉ )"
-                                    name="id"    
+                                    name="id"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Vui lòng chọn bác sĩ!',
-                                        },                                        
-                                    ]}                                
+                                            message: "Vui lòng chọn bác sĩ!",
+                                        },
+                                    ]}
                                 >
                                     <Select
                                         showSearch
@@ -168,39 +195,58 @@ const KeHoachKhamBenh = () => {
                                         placeholder="Chọn bác sĩ"
                                         optionFilterProp="label"
                                         filterSort={(optionA, optionB) =>
-                                            (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                                            (optionA?.label ?? "")
+                                                .toLowerCase()
+                                                .localeCompare(
+                                                    (
+                                                        optionB?.label ?? ""
+                                                    ).toLowerCase()
+                                                )
                                         }
                                         onChange={handleDoctorChange} // thêm cái này
-                                        value={dataDoctor?._id}                       
-                                        options={dataDoctor ? [{
-                                            value: dataDoctor._id, // Sử dụng _id làm giá trị
-                                            label: `${dataDoctor.lastName} ${dataDoctor.firstName} - 
+                                        value={dataDoctor?._id}
+                                        options={
+                                            dataDoctor
+                                                ? [
+                                                      {
+                                                          value: dataDoctor._id, // Sử dụng _id làm giá trị
+                                                          label: `${dataDoctor.lastName} ${dataDoctor.firstName} - 
                                                     Phòng khám: ${dataDoctor.phongKhamId?.name} (${dataDoctor.phongKhamId?.address})`, // Label hiển thị tên bác sĩ và phòng khám
-                                        }] : [{ value: '', label: 'Không có bác sĩ nào' }]} // Hiển thị thông báo nếu không có bác sĩ
-                                    />     
-                                </Form.Item>                                
+                                                      },
+                                                  ]
+                                                : [
+                                                      {
+                                                          value: "",
+                                                          label: "Không có bác sĩ nào",
+                                                      },
+                                                  ]
+                                        } // Hiển thị thông báo nếu không có bác sĩ
+                                    />
+                                </Form.Item>
                             </Col>
                             <Col span={5} md={5} sm={5} xs={24}>
                                 <Form.Item
                                     layout="vertical"
                                     label="Chọn ngày"
-                                    name="date"    
+                                    name="date"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Vui lòng chọn ngày!',
-                                        },                                        
-                                    ]}                                
-                                >  
-                                    <DatePicker 
-                                    placeholder="Chọn ngày khám" 
-                                    style={{width: "100%"}} 
-                                    format="DD/MM/YYYY" // Định dạng ngày/tháng/năm
-                                    onChange={handleDateChange} // thêm cái này
-                                    // onChange={onChange} 
-                                    disabledDate={current => current < moment().startOf('day')} // Không cho chọn ngày quá khứ
+                                            message: "Vui lòng chọn ngày!",
+                                        },
+                                    ]}
+                                >
+                                    <DatePicker
+                                        placeholder="Chọn ngày khám"
+                                        style={{ width: "100%" }}
+                                        format="DD/MM/YYYY" // Định dạng ngày/tháng/năm
+                                        onChange={handleDateChange} // thêm cái này
+                                        // onChange={onChange}
+                                        disabledDate={(current) =>
+                                            current < moment().startOf("day")
+                                        } // Không cho chọn ngày quá khứ
                                     />
-                                 </Form.Item>         
+                                </Form.Item>
                             </Col>
                         </Row>
                         {/* <Row gutter={[16, 16]}>
@@ -221,19 +267,31 @@ const KeHoachKhamBenh = () => {
                                 </Col>
                             )}
                         </Row> */}
-                        <Form.Item
+                        {/* <Form.Item
                             name="time" // Đặt tên cho trường thời gian
                         >
                             <Row gutter={[16, 16]}>
                                 {dataTime.length > 0 ? (
-                                    dataTime.map(time => (
-                                        <Col className="gutter-row" span={4} key={time._id}>
+                                    dataTime.map((time) => (
+                                        <Col
+                                            className="gutter-row"
+                                            span={4}
+                                            key={time._id}
+                                        >
                                             <div
-                                                className={`styles ${selectedTimes.includes(time._id) ? 'activee' : ''}`}
+                                                className={`styles ${
+                                                    selectedTimes.includes(
+                                                        time._id
+                                                    )
+                                                        ? "activee"
+                                                        : ""
+                                                }`}
                                                 onClick={() => {
                                                     handleTimeSelect(time._id);
                                                     // Cập nhật giá trị của trường trong form
-                                                    form.setFieldsValue({ time: selectedTimes });
+                                                    form.setFieldsValue({
+                                                        time: selectedTimes,
+                                                    });
                                                 }}
                                             >
                                                 {time.tenGio}
@@ -242,7 +300,68 @@ const KeHoachKhamBenh = () => {
                                     ))
                                 ) : (
                                     <Col className="gutter-row" span={4}>
-                                        <div className="styles">Không có time nào</div>
+                                        <div className="styles">
+                                            Không có time nào
+                                        </div>
+                                    </Col>
+                                )}
+                            </Row>
+                        </Form.Item> */}
+
+                        <Form.Item
+                            name="time" // Đặt tên cho trường thời gian
+                        >
+                            <Row gutter={[16, 16]}>
+                                {dataTime.length > 0 ? (
+                                    // Sắp xếp trước khi render
+                                    dataTime
+                                        .sort((a, b) => {
+                                            // Lấy thời gian bắt đầu từ `tenGio`, giả sử định dạng là "HH:mm - HH:mm"
+                                            const timeA =
+                                                a.tenGio.split(" - ")[0];
+                                            const timeB =
+                                                b.tenGio.split(" - ")[0];
+                                            // Chuyển thời gian thành đối tượng Date để so sánh
+                                            return (
+                                                new Date(
+                                                    `1970/01/01 ${timeA}`
+                                                ) -
+                                                new Date(`1970/01/01 ${timeB}`)
+                                            );
+                                        })
+                                        .map((time) => (
+                                            <Col
+                                                className="gutter-row"
+                                                span={4}
+                                                key={time._id}
+                                            >
+                                                <div
+                                                    className={`styles ${
+                                                        selectedTimes.includes(
+                                                            time._id
+                                                        )
+                                                            ? "activee"
+                                                            : ""
+                                                    }`}
+                                                    onClick={() => {
+                                                        handleTimeSelect(
+                                                            time._id
+                                                        );
+                                                        // Cập nhật giá trị của trường trong form
+                                                        form.setFieldsValue({
+                                                            time: selectedTimes,
+                                                        });
+                                                    }}
+                                                >
+                                                    {time.tenGio}
+                                                </div>
+                                            </Col>
+                                        ))
+                                ) : (
+                                    <Col className="gutter-row" span={4}>
+                                        <div className="styles">
+                                            Không có time nào
+                                        </div>
                                     </Col>
                                 )}
                             </Row>
@@ -269,14 +388,18 @@ const KeHoachKhamBenh = () => {
                             <div>Không có thời gian nào để chọn.</div> // Hoặc bất kỳ nội dung nào bạn muốn hiển thị
                         )} */}
 
-
-                        <Row gutter={[20,20]}>
+                        <Row gutter={[20, 20]}>
                             <Col span={24}>
                                 <Form.Item>
-                                    <br/>
-                                    <div style={{textAlign: "center"}}>
-                                        <Button type="primary" htmlType="submit">Lưu lại</Button>
-                                    </div>                                    
+                                    <br />
+                                    <div style={{ textAlign: "center" }}>
+                                        <Button
+                                            type="primary"
+                                            htmlType="submit"
+                                        >
+                                            Lưu lại
+                                        </Button>
+                                    </div>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -284,6 +407,6 @@ const KeHoachKhamBenh = () => {
                 </Col>
             </Row>
         </>
-    )
-}
-export default KeHoachKhamBenh
+    );
+};
+export default KeHoachKhamBenh;
