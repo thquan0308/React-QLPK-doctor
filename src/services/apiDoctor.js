@@ -199,10 +199,20 @@ export const xacNhanLich = (id, trangThaiXacNhan) => {
         id, trangThaiXacNhan
     })
 }
-export const updateTTBN = ( _id, benhAn, trangThaiKham) => {
+export const updateTTBN = (_id, benhAn, trangThaiKham) => {
     return axios.put('/api/doctor/edit-thongtinkham', {
-         _id, benhAn, trangThaiKham
+        _id, benhAn, trangThaiKham
     })
 }
 
+export const fetchCauHoi = (query) => {
+    const URL_BACKEND = `/api/cauhoi/get-cau-hoi?${query}`
+    return axios.get(URL_BACKEND)
+}
+
+export const traLoiCauHoiChoBN = (_id, cauTraLoi, cauHoi, status, email, firstName, lastName) => {
+    return axios.put('/api/cauhoi/tra-loi-cau-hoi', {
+        _id, cauTraLoi, cauHoi, status, email, firstName, lastName
+    })
+}
 

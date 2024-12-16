@@ -30,6 +30,7 @@ import React from "react";
 import { RiEdit2Fill } from "react-icons/ri";
 import { updateTTBN, xacNhanLich } from "../../services/apiDoctor";
 import "./custom.css";
+import SearchComponent from "../Search/SearchComponent";
 
 const QuanLyLichHen = () => {
     const [dataOrder, setDataOrder] = useState([]);
@@ -38,6 +39,9 @@ const QuanLyLichHen = () => {
     const [total, setTotal] = useState(0);
     const [loadingOrder, setLoadingOrder] = useState(false);
     const [sortQuery, setSortQuery] = useState("sort=createdAt&order=desc");
+    const [loadingEditKhamxONG, setLoadingEditKhamxONG] = useState(false);
+    const [loadingXacNhanOrder, setLoadingXacNhanOrder] = useState(false);
+    const [searchValue, setSearchValue] = useState(""); // State lưu giá trị tìm kiếm
 
     const [openViewDH, setOpenViewDH] = useState(false);
     const [dataViewDH, setDataViewDH] = useState(null);
@@ -59,6 +63,9 @@ const QuanLyLichHen = () => {
         // Thêm tham số tìm kiếm vào query nếu có
         if (user) {
             query += `&idDoctor=${encodeURIComponent(user)}`;
+        }
+        if (searchValue) {
+            query += `&search=${encodeURIComponent(searchValue)}`; // Thêm giá trị tìm kiếm vào query
         }
         let res = await findAllLichHenByDoctor(query);
         console.log("res his order: ", res);
@@ -302,6 +309,7 @@ const QuanLyLichHen = () => {
                     </Tooltip> */}
 
                     <Switch
+                        loading={loadingXacNhanOrder}
                         checked={record.trangThaiXacNhan} // Kiểm tra nếu trạng thái là "Đã xác nhận" để bật switch
                         onChange={(checked) => onChangeCheck(checked, record)}
                         checkedChildren="Đã xác nhận"
@@ -419,6 +427,7 @@ const QuanLyLichHen = () => {
         const updatedStatus = checked ? true : false; // "Đã xác nhận" khi bật, "Chờ xác nhận" khi tắt
 
         try {
+            setLoadingXacNhanOrder(true);
             const response = await xacNhanLich(record._id, updatedStatus);
 
             if (response.data) {
@@ -433,6 +442,7 @@ const QuanLyLichHen = () => {
 
                 message.success("Cập nhật trạng thái thành công!");
             }
+            setLoadingXacNhanOrder(false);
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái:", error);
             message.error("Cập nhật trạng thái thất bại!");
@@ -462,6 +472,7 @@ const QuanLyLichHen = () => {
         const { _id, benhAn, trangThaiKham } = values;
         console.log("benhAn, trangThaiKham: ", benhAn, trangThaiKham);
 
+        setLoadingEditKhamxONG(true);
         let res = await updateTTBN(_id, benhAn, trangThaiKham);
         if (res) {
             message.success(res.message);
@@ -474,11 +485,21 @@ const QuanLyLichHen = () => {
                 description: res.message,
             });
         }
+        setLoadingEditKhamxONG(false);
     };
 
     return (
         <>
-            <Row>
+            <Row gutter={[20, 10]}>
+                <Col xs={24} sm={12} md={24} span={24}>
+                    <SearchComponent
+                        onSearch={(value) => {
+                            setSearchValue(value); // Cập nhật giá trị tìm kiếm
+                            findAllOrder(value); // Gọi hàm tìm kiếm khi có thay đổi
+                        }}
+                        placeholder="Tìm bệnh nhân theo tên hoặc email hoặc số điện thoại"
+                    />
+                </Col>
                 <Col xs={24} sm={12} md={24} span={24}>
                     <Table
                         onChange={onChange}
@@ -575,6 +596,7 @@ const QuanLyLichHen = () => {
                     style={{ marginTop: "50px" }}
                     width={700}
                     maskClosable={false}
+                    loading={loadingEditKhamxONG}
                     footer={null} // Ẩn footer mặc định
                     onCancel={() => setIsModalOpen(false)} // Đóng modal khi nhấn nút "X"
                 >
@@ -611,6 +633,7 @@ const QuanLyLichHen = () => {
                                     name="trangThaiKham"
                                 >
                                     <Switch
+                                        loading={loadingXacNhanOrder}
                                         style={{ width: "150px" }}
                                         checked={checkKham}
                                         onChange={(checked) =>
